@@ -9,10 +9,8 @@ import torch.nn.functional as F
 import random
 import tqdm
 
-if os.getcwd() not in sys.path:
-    sys.path.append(os.getcwd())
-from utils.load_scp import get_source_list
-from data.backup.helper import truc_wav
+from ..utils.load_scp import get_source_list
+from .backup.helper import truc_wav
 
 
 def generate_target_audio(spk1, spk2, regi, mix_length, regi_length, snr=5):

@@ -4,14 +4,10 @@ import random
 import tqdm
 import torchaudio
 import os.path as op
-import sys
-import os
 import numpy as np
 
-if os.getcwd() not in sys.path:
-    sys.path.append(os.getcwd())
-from data.helper import truc_wav, generate_target_audio
-from utils.load_scp import get_source_list
+from .helper import truc_wav, generate_target_audio
+from ..utils.load_scp import get_source_list
 
 SEED = 1234
 

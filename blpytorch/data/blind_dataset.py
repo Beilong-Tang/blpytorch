@@ -9,8 +9,8 @@ import os
 
 if os.getcwd() not in sys.path:
     sys.path.append(os.getcwd())
-from data.helper import truc_wav, generate_target_audio
-from utils.load_scp import get_source_list
+from .helper import truc_wav, generate_target_audio
+from ..utils.load_scp import get_source_list
 
 
 class AbsBlindDataset(Dataset):
