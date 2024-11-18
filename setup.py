@@ -15,7 +15,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.9',            # Python version requirement
+    python_requires='>=3.8',            # Python version requirement
     install_requires=[                  # Add dependencies
         # Example: "numpy>=1.21.0",
     ],
