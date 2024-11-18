@@ -1,8 +1,0 @@
-README.md
-setup.py
-blpytorch.egg-info/PKG-INFO
-blpytorch.egg-info/SOURCES.txt
-blpytorch.egg-info/dependency_links.txt
-blpytorch.egg-info/entry_points.txt
-blpytorch.egg-info/top_level.txt
-tests/test_data.py
