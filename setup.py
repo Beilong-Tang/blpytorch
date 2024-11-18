@@ -10,6 +10,11 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Beilong-Tang/blpytorch",  # Optional: Project URL
     packages=find_packages(),           # Automatically find sub-packages
+    entry_points={
+        "console_scripts": [
+            "blpytorch-eval=blpytorch.eval:main",
+        ],
+    },
     classifiers=[                       # Optional: Metadata
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
