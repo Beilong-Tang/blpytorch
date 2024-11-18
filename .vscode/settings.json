@@ -1,0 +1,14 @@
+{
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.extraPaths": [
+        "D:\\research\\speech\\work\\benchmarks\\speechbrain",
+        "D:\\research\\speech\\work\\ml_framework_slurm",
+        "/d/research/speech/work/ml_framework_slurm"
+    ],
+    "cSpell.enableFiletypes": [
+        "!markdown",
+        "!python",
+        "!yaml"
+    ],
+    "files.eol": "\n"
+}
