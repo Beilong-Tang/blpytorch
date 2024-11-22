@@ -27,3 +27,4 @@ if __name__ == "__main__":
     config = AttrDict(**config)
     print(config.a)
     print(config.get("a"))
+    print(config['a'])
