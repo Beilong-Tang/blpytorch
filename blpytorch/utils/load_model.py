@@ -16,6 +16,11 @@ def strip_ddp_state_dict(state_dict):
             new_state_dict[k] = v
     return new_state_dict
 
+def get_model_params(model:nn.Module) -> int:
+    total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    return total_params
+    pass
+
 
 def load_model(config_path: str, ckpt_path: str, device="cuda", strict=False):
     """
