@@ -4,12 +4,9 @@ import os
 import logging
 
 
-def setup_logger(args: Namespace, rank: int, out=True):
+def setup_logger(log_dir: str, rank: int, out=True):
     if out:
         now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        log_dir = os.path.join(
-            args.log, os.path.basename(args.config).replace(".yaml", "")
-        )
         os.makedirs(log_dir, exist_ok=True)
         logging.basicConfig(
             level=logging.INFO,
