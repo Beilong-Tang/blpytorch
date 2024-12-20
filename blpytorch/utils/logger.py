@@ -1,5 +1,4 @@
 import datetime
-from argparse import Namespace
 import os
 import logging
 
