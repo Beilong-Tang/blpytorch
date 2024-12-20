@@ -54,5 +54,4 @@ class Logger:
 
     def critical(self, msg: str):
         self.log.critical(f"rank {self.rank} - {msg}")
-
         pass

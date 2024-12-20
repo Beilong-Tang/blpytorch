@@ -5,7 +5,7 @@ def get_env(config_path:str):
     config_path: str to yaml config
     """
     with open(config_path, "r") as f:
-        config = yaml.safe_load(config_path)
+        config = yaml.safe_load(f)
     config = AttrDict(**config)
     return config
 
@@ -23,6 +23,9 @@ class AttrDict(dict):
             return None
 
 if __name__ == "__main__":
+    config_path = "test.yaml"
+    config = get_env(config_path)
+    print(config)
     config = yaml.safe_load("a: 2")
     config = AttrDict(**config)
     print(config.a)
