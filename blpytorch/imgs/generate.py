@@ -13,7 +13,7 @@ def get_generate_paths(num_samples, rank, world_size, img_dir):
     resumed without duplicating work.
 
     Args:
-        num_samples (Sequence or int):
+        num_samples (int):
             Collection whose length equals the total number of images to
             generate. Only `len(num_samples)` is used.
         rank (int):
@@ -31,7 +31,7 @@ def get_generate_paths(num_samples, rank, world_size, img_dir):
             been generated.
     """
     # All image indices.
-    img_total_ids = [i for i in range(len(num_samples))]
+    img_total_ids = [i for i in range(num_samples)]
 
     # Assign indices to this process via strided partitioning.
     img_total_ids = img_total_ids[rank::world_size]
