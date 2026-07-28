@@ -22,7 +22,8 @@ def get_generate_paths(num_samples, rank, world_size, img_dir):
             Total number of parallel processes.
         img_dir (str or Path):
             Directory containing generated PNG images. Images are expected
-            to be named as `<index>.png`, where `<index>` is an integer.
+            to have filenames beginning with the image index followed by an
+            optional suffix, e.g., `<index>.png` or `<index>_*.png`.
 
     Returns:
         List[int]:
@@ -35,9 +36,11 @@ def get_generate_paths(num_samples, rank, world_size, img_dir):
     # Assign indices to this process via strided partitioning.
     img_total_ids = img_total_ids[rank::world_size]
 
-    # Find existing generated images.
+    # Find indices of existing generated images. The image index is parsed
+    # from the filename prefix before the first underscore (or the extension
+    # if no underscore is present).
     exist_imgs = glob.glob(os.path.join(img_dir, "*.png"))
-    img_idxs = [int(Path(i).stem) for i in exist_imgs]
+    img_idxs = [int(Path(i).stem.split("_")[0]) for i in exist_imgs]
 
     # Keep only images that still need to be generated.
     img_gen_idxs = [i for i in img_total_ids if i not in img_idxs]
