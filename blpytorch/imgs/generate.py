@@ -47,30 +47,28 @@ def get_generate_paths(num_samples, rank, world_size, img_dir):
 
     return img_gen_idxs
 
-def save_img(idx_list, sample_tensor, out_dir):
+def save_img(sample_tensor, out_path_list):
     """
     Save a batch of images to disk.
 
-    Each image is written as a PNG file named according to its corresponding
-    index in `idx_list` (e.g., `00001.png`). The input tensor is expected to
-    have shape `[N, C, H, W]`, where `N` matches the length of `idx_list`.
+    Each image in `sample_tensor` is saved to the corresponding file path in
+    `out_path_list`. The input tensor is expected to have shape
+    `[N, C, H, W]`, where `N` equals the number of output paths.
 
     Args:
-        idx_list (Sequence[int]):
-            Image indices used to name the output files.
         sample_tensor (torch.Tensor):
             Batch of images with shape `[N, C, H, W]`. The tensor may reside
             on either the CPU or GPU.
-        out_dir (str or Path):
-            Directory in which to save the PNG images.
+        out_path_list (Sequence[str | Path]):
+            Output file paths for each image. Its length must match the batch
+            size of `sample_tensor`.
     """
-    # Ensure every image has a corresponding output filename.
-    assert len(idx_list) == sample_tensor.size(0)
+    # Ensure every image has a corresponding output path.
+    assert len(out_path_list) == sample_tensor.size(0)
 
     # Move the batch to CPU before saving.
     sample_tensor = sample_tensor.cpu()
 
-    # Save each image as "<index>.png".
-    for _idx, _tensor in zip(idx_list, sample_tensor):
-        _save_dir = os.path.join(out_dir, f"{_idx:05d}.png")
-        save_image(_tensor, _save_dir)
+    # Save each image to its corresponding path.
+    for _path, _tensor in zip(out_path_list, sample_tensor):
+        save_image(_tensor, _path)
