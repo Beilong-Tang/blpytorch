@@ -8,12 +8,13 @@ from typing import Tuple
 import os
 import torch
 
-def setup_all_ddp(seed, logdir) -> Tuple[bool, int, Logger]:
+def setup_all_ddp(seed, logdir, init_process=True) -> Tuple[bool, int, Logger]:
     """Set up distributed training, random seed, and logger.
 
     Args:
         seed: Base random seed.
         logdir: Directory for log files.
+        init_process: whther to run dist.init_process (usually disabled during sampling where our goal is just run parallel computing)
 
     Returns:
         A tuple containing:
@@ -21,7 +22,7 @@ def setup_all_ddp(seed, logdir) -> Tuple[bool, int, Logger]:
             - rank: Global process rank.
             - logger: Configured logger.
     """
-    is_ddp, rank, device = setup_ddp()
+    is_ddp, rank, device = setup_ddp(init_process=init_process)
     seed = setup_seed(seed, rank)
     logger = setup_logger(logdir, rank)
     world_size = int(os.environ.get("WORLD_SIZE", 1))

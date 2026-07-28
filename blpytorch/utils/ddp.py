@@ -7,7 +7,7 @@ import torch
 from typing import Tuple
 
 
-def setup_ddp() -> Tuple[bool, int]:
+def setup_ddp(init_process) -> Tuple[bool, int]:
     # If not launched with torchrun, just run normally.
     if "RANK" not in os.environ:
         return False, 0, torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -18,7 +18,8 @@ def setup_ddp() -> Tuple[bool, int]:
     torch.cuda.set_device(local_rank)
 
     # torchrun
-    dist.init_process_group(backend="nccl")
+    if init_process:
+        dist.init_process_group(backend="nccl")
 
     return True, rank, torch.device(f"cuda:{local_rank}")
 
