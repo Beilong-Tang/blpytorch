@@ -30,5 +30,5 @@ def get_gpu_stats(device=None):
 
     mem_pct = 100 * mem.used / mem.total
     return (
-        f"[GPU Util: {util.gpu}% | Mem: {mem_pct}%]"
+            f"[GPU Util: {util.gpu}% | Mem: {mem_pct:.1f}%]"
     )
