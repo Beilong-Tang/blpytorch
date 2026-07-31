@@ -6,62 +6,83 @@ from contextlib import contextmanager
 def time_to_str(time):
     return str(timedelta(seconds=int(time)))
 
+from collections import deque
+import time
+from datetime import timedelta
+from contextlib import contextmanager
+
+
 class ContextTimer:
     """Flexible timer with context manager support for multiple processes."""
-    def __init__(self, total_steps, disable = True):
+
+    def __init__(self, total_steps, disable=True, avg_window=10):
         self.total_steps = total_steps
-        self.step_count = 0
-        self.timers = {}                # accumulated time per key
-        self.total_step_time = 0.0      # total elapsed time for all steps
-        self.step_start_time = time.time()     # start time of current step
         self.disable = disable
+
+        self.step_count = 0
+        self.timers = {}
+
+        self.step_start_time = time.time()
+
+        # Rolling average
+        self.avg_window = avg_window
+        self.step_history = deque(maxlen=avg_window)
+        self.total_step_time=0.0
 
     @contextmanager
     def track(self, key):
         """Use like `with timer.track("data"):`"""
-        if not self.disable:
-            t0 = time.time()
+        if self.disable:
             yield
-            elapsed = time.time() - t0
-            self.timers[key] = self.timers.get(key, 0.0) + elapsed
-        else:
-            yield
+            return
 
-    # def step_start(self):
-    #     """Call at the beginning of each step to mark the start."""
-    #     self.step_start_time = time.time()
+        t0 = time.time()
+        yield
+        elapsed = time.time() - t0
+        if key not in self.timers:
+            self.timers[key] = deque(maxlen=self.avg_window)
+        self.timers[key].append(elapsed)
 
-    # def step_end(self):
-    #     """Call at the end of the step."""
-    #     if self.step_start_time is None:
-    #         raise RuntimeError("step_start() must be called before step_end()")
-    #     elapsed = time.time() - self.step_start_time
-    #     self.total_step_time += elapsed
-    #     self.step_count += 1
-    #     self.step_start_time = None   # reset for next step
-    
     def update(self):
         elapsed = time.time() - self.step_start_time
         self.total_step_time += elapsed
+
         self.step_count += 1
-        self.step_start_time = time.time()   # reset for next step
-        pass
+
+        # Update rolling window
+        self.step_history.append(elapsed)
+
+        self.step_start_time = time.time()
+        
 
     def stats(self):
         if self.step_count == 0:
             step_times = {}
-            step_total = 0.0
         else:
-            step_times = {k: t / self.step_count for k, t in self.timers.items()}
-            step_total = self.total_step_time / self.step_count
+            step_times = {
+                k: sum(t) / len(t)
+                for k, t in self.timers.items()
+                if len(t) > 0
+            }
 
-        # Build string components
-        eta = timedelta(seconds=int((self.total_steps - self.step_count) * step_total)) if step_total > 0 else timedelta(0)
-        eta = str(eta)
-        res = f"[{time_to_str(self.total_step_time)}<{eta}, {step_total:.3f}s/it"
+        # ETA uses rolling average instead of global average
+        instant_velocity = sum(self.step_history) / len(self.step_history) if self.step_history else 0.0
+        eta_step = instant_velocity if self.step_history else 0.0
+        eta = (
+            time_to_str(int((self.total_steps - self.step_count) * eta_step))
+            if eta_step > 0
+            else time_to_str(0)
+        )
+
+        res = (
+            f"[{time_to_str(self.total_step_time)}<{eta}, "
+            f"{eta_step:.3f}s/it"
+        )
+
         for k, v in step_times.items():
             res += f", {k}: {v:.3f}s"
-        res +="]"
+
+        res += "]"
         return res
 
 if __name__ == "__main__":
