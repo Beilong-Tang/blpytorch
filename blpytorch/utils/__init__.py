@@ -40,3 +40,10 @@ def setup_all_parallel(logdir, seed):
     seed = setup_seed(seed, rank)
     device = torch.device(f"cuda:{rank}" if torch.cuda.is_available() else 'cpu')
     return rank, world_size, logger, device
+
+
+def raise_unexpect(msg):
+    """
+    raise an Value Error which means unexpected behavior of the code
+    """
+    raise ValueError(f"blpytorch: {msg}")
