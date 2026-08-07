@@ -23,6 +23,8 @@ def get_gpu_stats(device=None):
     """
     if device is None:
         device = torch.cuda.current_device()
+    if isinstance(device, torch.device):
+        device = device.index
 
     handle = nvmlDeviceGetHandleByIndex(device)
     util = nvmlDeviceGetUtilizationRates(handle)
