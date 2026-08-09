@@ -53,6 +53,7 @@ def setup_logger(log_dir: str, rank: int, out=True):
         format=f"%(asctime)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=handlers,
+        force=True
     )
 
     logger = logging.getLogger()
