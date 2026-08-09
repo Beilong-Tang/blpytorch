@@ -3,6 +3,8 @@ import random
 import numpy as np
 
 def setup_seed(seed, rank):
+    if seed is None:
+        return None
     SEED = int(seed) + rank
     random.seed(SEED)
     np.random.seed(SEED)
