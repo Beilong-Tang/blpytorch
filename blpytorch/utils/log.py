@@ -33,6 +33,9 @@ class Logger:
     def critical(self, msg: str):
         self.log.critical(f"rank {self.rank} - {msg}")
 
+    def __call__(self, *args, **kwargs):
+        self.info(*args, **kwargs)
+
 
 def setup_logger(log_dir: str, rank: int, out=True):
 
