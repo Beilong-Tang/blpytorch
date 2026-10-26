@@ -1,0 +1,17 @@
+#!/bin/bash
+# touch_mtime.sh — set the modified date to now on every file and folder under a directory
+# Usage:
+#   ./touch_mtime.sh [dir]                         # run on the cluster
+#   ssh btang1@login.ncshare.org 'bash -s' < touch_mtime.sh /work/btang1/work/DiT   # run from your machine
+
+DIR="${1:-/work/btang1/work/DiT}"
+cd "$DIR" || { echo "cannot cd to $DIR"; exit 1; }
+
+# Files first, then folders. -m changes only the modified time, not the access time.
+find . -type f -exec touch -m {} +
+find . -type d -exec touch -m {} +
+
+# Check: count everything still older than today's date (should be 0)
+echo "files:   $(find . -type f | wc -l)"
+echo "folders: $(find . -type d | wc -l)"
+echo "older than today: $(find . ! -newermt "$(date +%F)" | wc -l)"
