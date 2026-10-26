@@ -23,5 +23,6 @@ setup(
     python_requires='>=3.8',            # Python version requirement
     install_requires=[                  # Add dependencies
         # Example: "numpy>=1.21.0",
+        'pytz', 'omegaconf', 'hydra-core'
     ],
 )
