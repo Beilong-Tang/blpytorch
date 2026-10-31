@@ -1,0 +1,24 @@
+#!/bin/bash
+# Log GPU usage as a fixed-width table.
+# Usage: gpumon.sh [interval_sec=30]   (e.g. `ncsu_hpc/gpumon.sh 30 > gpu_usage.log &`)
+interval=${1:-30}
+
+nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,utilization.memory,memory.used,memory.total,temperature.gpu,power.draw \
+    --format=csv,noheader,nounits -l "$interval" |
+awk -F', *' '
+BEGIN {
+    fmt = "%-19s  %3s  %-14s  %5s  %5s  %17s  %6s  %5s  %6s\n"
+    printf fmt, "time", "gpu", "name", "util", "mem%", "mem used/total", "used%", "temp", "power"
+    printf fmt, "-------------------", "---", "--------------", "-----", "-----", "-----------------", "------", "-----", "------"
+    fflush()
+}
+{
+    # timestamp looks like "2026/10/10 12:34:56.789"; drop millis
+    ts = substr($1, 1, 19)
+    name = $3; sub(/^NVIDIA /, "", name); name = substr(name, 1, 14)
+    mem = sprintf("%6.1f/%5.1f GiB", $6 / 1024, $7 / 1024)
+    pct = ($7 > 0) ? sprintf("%5.1f%%", 100 * $6 / $7) : "-"
+    printf "%-19s  %3s  %-14s  %4s%%  %4s%%  %17s  %6s  %4sC  %5.0fW\n",
+        ts, $2, name, $4, $5, mem, pct, $8, $9
+    fflush()
+}'
